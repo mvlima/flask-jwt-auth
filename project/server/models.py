@@ -1,27 +1,33 @@
 # project/server/models.py
 
-
 import jwt
 import datetime
 
 from project.server import app, db, bcrypt
-
 
 class User(db.Model):
     """ User Model for storing user related details """
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    address = db.Column(db.Integer(255), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, email, password, admin=False):
+    def __init__(self, email, username, password, name, age, address, admin=False):
         self.email = email
+        self.username = username
         self.password = bcrypt.generate_password_hash(
             password, app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
+        self.name = name
+        self.age = age
+        self.address = address
         self.registered_on = datetime.datetime.now()
         self.admin = admin
 
@@ -83,7 +89,7 @@ class BlacklistToken(db.Model):
 
     @staticmethod
     def check_blacklist(auth_token):
-        # check whether auth token has been blacklisted
+        # Check whether auth token has been blacklisted
         res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
         if res:
             return True

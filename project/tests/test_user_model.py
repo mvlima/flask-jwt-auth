@@ -1,13 +1,10 @@
 # project/tests/test_user_model.py
 
-
-
 import unittest
 
 from project.server import db
 from project.server.models import User
 from project.tests.base import BaseTestCase
-
 
 class TestUserModel(BaseTestCase):
 
@@ -33,7 +30,6 @@ class TestUserModel(BaseTestCase):
 
         self.assertTrue(User.decode_auth_token(
             auth_token.decode("utf-8") ) == 1)
-
 
 if __name__ == '__main__':
     unittest.main()

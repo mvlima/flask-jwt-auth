@@ -1,6 +1,6 @@
 # project/server/auth/views.py
 
-
+from os import name
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
@@ -9,27 +9,29 @@ from project.server.models import User, BlacklistToken
 
 auth_blueprint = Blueprint('auth', __name__)
 
-
 class RegisterAPI(MethodView):
     """
     User Registration Resource
     """
-
     def post(self):
-        # get the post data
+        # Get the post data
         post_data = request.get_json()
-        # check if user already exists
+        # Check if user already exists
         user = User.query.filter_by(email=post_data.get('email')).first()
         if not user:
             try:
                 user = User(
+                    username=post_data.get('username'),
                     email=post_data.get('email'),
-                    password=post_data.get('password')
+                    password=post_data.get('password'),
+                    name=post_data.get('name'),
+                    age=post_data.get('age'),
+                    address=post_data.get('address')
                 )
-                # insert the user
+                # Insert the user
                 db.session.add(user)
                 db.session.commit()
-                # generate the auth token
+                # Generate the auth token
                 auth_token = user.encode_auth_token(user.id)
                 responseObject = {
                     'status': 'success',
@@ -50,16 +52,15 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 202
 
-
 class LoginAPI(MethodView):
     """
     User Login Resource
     """
     def post(self):
-        # get the post data
+        # Get the post data
         post_data = request.get_json()
         try:
-            # fetch the user data
+            # Fetch the user data
             user = User.query.filter_by(
                 email=post_data.get('email')
             ).first()
@@ -88,13 +89,12 @@ class LoginAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 500
 
-
 class UserAPI(MethodView):
     """
     User Resource
     """
     def get(self):
-        # get the auth token
+        # Get the auth token
         auth_header = request.headers.get('Authorization')
         if auth_header:
             try:
@@ -115,7 +115,10 @@ class UserAPI(MethodView):
                     'status': 'success',
                     'data': {
                         'user_id': user.id,
+                        'username': user.username,
                         'email': user.email,
+                        'age': user.age,
+                        'address': user.address,
                         'admin': user.admin,
                         'registered_on': user.registered_on
                     }
@@ -133,7 +136,6 @@ class UserAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 401
 
-
 class LogoutAPI(MethodView):
     """
     Logout Resource
@@ -148,10 +150,10 @@ class LogoutAPI(MethodView):
         if auth_token:
             resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
-                # mark the token as blacklisted
+                # Mark the token as blacklisted
                 blacklist_token = BlacklistToken(token=auth_token)
                 try:
-                    # insert the token
+                    # Insert the token
                     db.session.add(blacklist_token)
                     db.session.commit()
                     responseObject = {
@@ -178,13 +180,13 @@ class LogoutAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 403
 
-# define the API resources
+# Define the API resources
 registration_view = RegisterAPI.as_view('register_api')
 login_view = LoginAPI.as_view('login_api')
 user_view = UserAPI.as_view('user_api')
 logout_view = LogoutAPI.as_view('logout_api')
 
-# add Rules for API Endpoints
+# Add Rules for API Endpoints
 auth_blueprint.add_url_rule(
     '/auth/register',
     view_func=registration_view,

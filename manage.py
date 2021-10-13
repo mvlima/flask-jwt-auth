@@ -1,6 +1,5 @@
 # manage.py
 
-
 import os
 import unittest
 import coverage
@@ -27,7 +26,6 @@ manager = Manager(app)
 # migrations
 manager.add_command('db', MigrateCommand)
 
-
 @manager.command
 def test():
     """Runs the unit tests without test coverage."""
@@ -36,7 +34,6 @@ def test():
     if result.wasSuccessful():
         return 0
     return 1
-
 
 @manager.command
 def cov():
@@ -56,18 +53,15 @@ def cov():
         return 0
     return 1
 
-
 @manager.command
 def create_db():
     """Creates the db tables."""
     db.create_all()
 
-
 @manager.command
 def drop_db():
     """Drops the db tables."""
     db.drop_all()
-
 
 if __name__ == '__main__':
     manager.run()
