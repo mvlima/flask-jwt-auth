@@ -1,42 +1,38 @@
 # Flask JWT Auth
 
-[![Build Status](https://travis-ci.org/realpython/flask-jwt-auth.svg?branch=master)](https://travis-ci.org/realpython/flask-jwt-auth)
+Utilizado como referência o [post](https://realpython.com/blog/python/token-based-authentication-with-flask/) do blog Real Python e o código utilizados nele.
 
-## Want to learn how to build this project?
+As instruções de teste seguem abaixo:
 
-Check out the [blog post](https://realpython.com/blog/python/token-based-authentication-with-flask/).
-
-## Want to use this project?
-
-### Basics
+### Início
 
 1. Fork/Clone
-1. Activate a virtualenv
-1. Install the requirements
+1. Ative um virtualenv
+1. Instalar os requirements
 
-### Set Environment Variables
+### Configurar Variáveis de Ambiente
 
-Update *project/server/config.py*, and then run:
+Atualize *project/server/config.py*, e depois rode:
 
 ```sh
 $ export APP_SETTINGS="project.server.config.DevelopmentConfig"
 ```
 
-or
+ou
 
 ```sh
 $ export APP_SETTINGS="project.server.config.ProductionConfig"
 ```
 
-Set a SECRET_KEY:
+Defina uma SECRET_KEY:
 
 ```sh
 $ export SECRET_KEY="change_me"
 ```
 
-### Create DB
+### Crie a DB
 
-Create the databases in `psql`:
+Cria a base de dados em `psql`:
 
 ```sh
 $ psql
@@ -45,7 +41,7 @@ $ psql
 # \q
 ```
 
-Create the tables and run the migrations:
+Crie as tabelas e depois rode as migrações:
 
 ```sh
 $ python manage.py create_db
@@ -53,29 +49,29 @@ $ python manage.py db init
 $ python manage.py db migrate
 ```
 
-### Run the Application
+### Rode a Aplicação
 
 ```sh
 $ python manage.py runserver
 ```
 
-Access the application at the address [http://localhost:5000/](http://localhost:5000/)
+Acesse a aplicação no [http://localhost:5000/](http://localhost:5000/)
 
-> Want to specify a different port?
+> Quer especificar uma porta diferente?
 
 > ```sh
 > $ python manage.py runserver -h 0.0.0.0 -p 8080
 > ```
 
-### Testing
+### Teste
 
-Without coverage:
+Sem coverage:
 
 ```sh
 $ python manage.py test
 ```
 
-With coverage:
+Com coverage:
 
 ```sh
 $ python manage.py cov
